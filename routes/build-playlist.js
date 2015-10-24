@@ -1,14 +1,14 @@
 var express = require('express');
 var url = require('url');
+var generator = require('../lib/generator');
 var router = express.Router();
 
 /* GET a playlist by keyword*/
-router.get('/with-words', function(req, res, next) {
-    var url_parts = url.parse(req.url, true);
-    var query = url_parts.query.words;
-
-    // TODO: This response is just filler. We need to determine a meaningful response
-    res.send(query);
+router.post('/with-words', function(req, res, next) {
+    var words = req.body.words;
+    generator.getPlaylistFromWords(words, function(response) {
+        res.send(response);
+    });
 });
 
 module.exports = router;
