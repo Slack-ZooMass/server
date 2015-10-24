@@ -4,6 +4,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var bluemix = require('./lib/bluemix.js');
+var extend = require('util')._extend;
+var watson = require('watson-developer-cloud');
 
 var routes = require('./routes/index');
 var build_playlist = require('./routes/build-playlist');
