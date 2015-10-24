@@ -1,0 +1,55 @@
+{
+  "playlists": {
+    "href": "https://api.spotify.com/v1/search?query=disturbance&offset=0&limit=1&type=playlist",
+    "items": [
+      {
+        "collaborative": false,
+        "external_urls": {
+          "spotify": "http://open.spotify.com/user/hashpuppy1/playlist/0g6gno32J3pHV4RS97aSqn"
+        },
+        "href": "https://api.spotify.com/v1/users/hashpuppy1/playlists/0g6gno32J3pHV4RS97aSqn",
+        "id": "0g6gno32J3pHV4RS97aSqn",
+        "images": [
+          {
+            "height": 640,
+            "url": "https://mosaic.scdn.co/640/58410d126b9dc3cda522afa67702b171dd3c57ca8d4b9cfe21a3d445f0243e3561973f0f8f5c860cd0c5264cf444584ec27b12df02a61eefc2ab665cb9830d27d3a346dfa45dd43ec4f9f04542e534ae",
+            "width": 640
+          },
+          {
+            "height": 300,
+            "url": "https://mosaic.scdn.co/300/58410d126b9dc3cda522afa67702b171dd3c57ca8d4b9cfe21a3d445f0243e3561973f0f8f5c860cd0c5264cf444584ec27b12df02a61eefc2ab665cb9830d27d3a346dfa45dd43ec4f9f04542e534ae",
+            "width": 300
+          },
+          {
+            "height": 60,
+            "url": "https://mosaic.scdn.co/60/58410d126b9dc3cda522afa67702b171dd3c57ca8d4b9cfe21a3d445f0243e3561973f0f8f5c860cd0c5264cf444584ec27b12df02a61eefc2ab665cb9830d27d3a346dfa45dd43ec4f9f04542e534ae",
+            "width": 60
+          }
+        ],
+        "name": "disturbance",
+        "owner": {
+          "external_urls": {
+            "spotify": "http://open.spotify.com/user/hashpuppy1"
+          },
+          "href": "https://api.spotify.com/v1/users/hashpuppy1",
+          "id": "hashpuppy1",
+          "type": "user",
+          "uri": "spotify:user:hashpuppy1"
+        },
+        "public": null,
+        "snapshot_id": "EK4FT1wwjwLee1GF09/bu9OqW5a7xmx41dUIBWxvqPj11gMmsZNdSGTIh6k6xOXe",
+        "tracks": {
+          "href": "https://api.spotify.com/v1/users/hashpuppy1/playlists/0g6gno32J3pHV4RS97aSqn/tracks",
+          "total": 47
+        },
+        "type": "playlist",
+        "uri": "spotify:user:hashpuppy1:playlist:0g6gno32J3pHV4RS97aSqn"
+      }
+    ],
+    "limit": 1,
+    "next": "https://api.spotify.com/v1/search?query=disturbance&offset=1&limit=1&type=playlist",
+    "offset": 0,
+    "previous": null,
+    "total": 2
+  }
+}
