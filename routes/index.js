@@ -2,13 +2,16 @@ var express = require('express');
 var router = express.Router();
 var querystring = require('querystring');
 var spotify = require('../lib/spotify.js');
+var generator = require('../lib/generator');
 
+// README
 router.get('/', function(req, res, next) {
   spotify.getPlaylist('dogs', function(data){
     res.render('index', { title: data });
   });
 });
 
+// authenticate with spotify
 router.get('/login', function(req, res, next) {
   var query = {
     client_id : process.env.CLIENT_ID,
@@ -19,6 +22,7 @@ router.get('/login', function(req, res, next) {
   res.redirect('https://accounts.spotify.com/authorize?' + querystring.stringify(query));
 });
 
+// get authentication token and save to cookie
 router.get('/callback', function(req, res, next) {
   var error = req.query.error
   if(error){
@@ -28,13 +32,22 @@ router.get('/callback', function(req, res, next) {
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'http://localhost:3000/callback'};
   spotify.requestToken(authenticationInformation, function(access_token){
-    var playlist = { ownerID: 'songgen', playlistName: 'SUCK IT SPOTIFY!'};
-    spotify.createPlaylist(playlist, access_token, function(data){
-      var playlist = { ownerID: 'songgen', playlistID: '1gijkE1Nx8hSCHP31Ai0Fc' };
-      var tracks = [ 'spotify:track:6rqhFgbbKwnb9MLmUQDhG6', 'spotify:track:383QXk8nb2YrARMUwDdjQS' ]
-      spotify.addToPlaylist(playlist, tracks, access_token, function(data){
-        res.render('index', { title: access_token });
-      });
+    res.cookie('access_token', access_token);
+    res.render('query')
+  });
+});
+
+router.get('/generateAndRedirect', function(req, res, next) {
+  var access_token = req.cookies.access_token;
+  spotify.getMe(access_token, function(data){
+    var words = req.query.words.split(' ');
+    var user_id = data.id;
+
+    console.log(user_id);
+    console.log(words);
+
+    generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+        res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
     });
   });
 });
