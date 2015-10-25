@@ -21,7 +21,7 @@ router.get('/', function(req, res, next) {
 
 // authenticate with spotify
 router.get('/login', function(req, res, next) {
-  console.log(process.env.CLIENT_ID);
+  console.log('LOGIN JFKDLSJ:FKLS:DJFKLS:JFKLS:DJFKL:SJFKDL:SFJKSL:FJKSLD:FJKSLD:FJKSL:FJKDLS: ' + process.env.CLIENT_ID);
   var query = {
     client_id : process.env.CLIENT_ID,
     response_type : 'code',
