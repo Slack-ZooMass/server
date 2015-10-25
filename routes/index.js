@@ -24,7 +24,7 @@ router.get('/login', function(req, res, next) {
   var query = {
     client_id : process.env.CLIENT_ID,
     response_type : 'code',
-    redirect_uri : 'http://localhost:3000/callback',
+    redirect_uri : 'https://still-inlet-8239.herokuapp.com/callback',
     scope : 'playlist-modify-public'
   }
   res.redirect('https://accounts.spotify.com/authorize?' + querystring.stringify(query));
