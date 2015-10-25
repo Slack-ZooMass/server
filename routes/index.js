@@ -6,7 +6,7 @@ var generator = require('../lib/generator');
 
 // README
 router.get('/', function(req, res, next) {
-  var access_token = req.cookies.access_token;
+  var access_token = req.cookies.access_token
   spotify.getMe(access_token, function(data){
     var user_id = data.id;
 
@@ -40,8 +40,9 @@ router.get('/callback', function(req, res, next) {
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'http://localhost:3000/callback'};
   spotify.requestToken(authenticationInformation, function(data){
+    console.log(data.access_token);
     res.cookie('access_token', data.access_token);
-    res.render('query')
+    res.render('query');
   });
 });
 
