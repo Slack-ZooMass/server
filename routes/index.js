@@ -22,11 +22,11 @@ router.get('/', function(req, res, next) {
 
 // authenticate with spotify
 router.get('/login', function(req, res, next) {
-  
+
   var hostname = req.headers.host; // hostname = 'localhost:8080'
   var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
   console.log(pathname);
-  
+
   console.log('LOGIN JFKDLSJ:FKLS:DJFKLS:JFKLS:DJFKL:SJFKDL:SFJKSL:FJKSLD:FJKSLD:FJKSL:FJKDLS: ' + process.env.CLIENT_ID);
   var query = {
     client_id : process.env.CLIENT_ID,
@@ -43,7 +43,7 @@ router.get('/callback', function(req, res, next) {
   if(error){
     res.render('index', { title : error });
   }
-  
+
    var hostname = req.headers.host; // hostname = 'localhost:8080'
   var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
 
