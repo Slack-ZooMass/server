@@ -2,6 +2,10 @@ var express = require('express');
 var url = require('url');
 var generator = require('../lib/generator');
 var router = express.Router();
+var extend = require('util')._extend;
+var bluemix = require('../lib/bluemix.js');
+var watson = require('watson-developer-cloud');
+var fs = require('fs');
 
 /* GET a playlist by keyword*/
 router.post('/with-words', function(req, res, next) {
@@ -11,6 +15,58 @@ router.post('/with-words', function(req, res, next) {
 
     generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
         res.send(response);
+    });
+});
+
+// if bluemix credentials exists, then override local
+var credentials = extend({
+  url: '<url>',
+  username: '<username>',
+  password: '<password>',
+  version: 'v1'
+}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
+
+// wrapper
+var visual_insights = watson.visual_insights(credentials);
+
+// get profile summary image analysis
+router.post('/summary', function(req, res, next) {
+    var images_file = fs.createReadStream('./dank_memes.zip');
+    if (!images_file)
+        return res.status(404).json({error:'The photo album zip file is not found.  Please try again.', code:404});
+
+    visual_insights.summary({images_file: images_file}, function (err, result) {
+        if (err)
+            return next(err);
+        else
+            res.json(result);
+    });
+});
+
+// get classifiers list
+router.get('/classifiers', function(req, res) {
+    visual_insights.classifiers(req.query).pipe(res);
+});
+
+/* GET a playlist by keyword*/
+router.post('/with-images', function(req, res, next) {
+    var words = req.body.words;
+    var access_token = req.body.access_token;
+    var user_id = req.body.user_id;
+    var images_file = fs.createReadStream('./dank_memes.zip');
+    if (!images_file)
+        return res.status(404).json({error:'The photo album zip file is not found.  Please try again.', code:404});
+
+    visual_insights.summary({images_file: images_file}, function (err, result) {
+        if (err){
+            return next(err);
+        }
+        else{
+            console.log();
+            // generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+            //     res.send(response);
+            // });
+        }
     });
 });
 

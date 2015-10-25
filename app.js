@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var bluemix = require('./lib/bluemix.js');
 var extend = require('util')._extend;
 var watson = require('watson-developer-cloud');
+var fs = require('fs');
 
 var routes = require('./routes/index');
 var build_playlist = require('./routes/build-playlist');
