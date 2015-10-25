@@ -6,9 +6,14 @@ var generator = require('../lib/generator');
 
 // README
 router.get('/', function(req, res, next) {
-  spotify.getPlaylist('dogs', function(data){
+  var access_token = req.cookies.access_token;
+  console.log(access_token);
+  if(access_token){
+    res.render('query');
+  }
+  else{
     res.render('index', { title: data });
-  });
+  }
 });
 
 // authenticate with spotify
