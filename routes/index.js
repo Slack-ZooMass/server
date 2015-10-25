@@ -3,6 +3,7 @@ var router = express.Router();
 var querystring = require('querystring');
 var spotify = require('../lib/spotify.js');
 var generator = require('../lib/generator');
+var url = require('url');
 
 // README
 router.get('/', function(req, res, next) {
@@ -21,11 +22,16 @@ router.get('/', function(req, res, next) {
 
 // authenticate with spotify
 router.get('/login', function(req, res, next) {
+  
+  var hostname = req.headers.host; // hostname = 'localhost:8080'
+  var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
+  console.log(pathname);
+  
   console.log('LOGIN JFKDLSJ:FKLS:DJFKLS:JFKLS:DJFKL:SJFKDL:SFJKSL:FJKSLD:FJKSLD:FJKSL:FJKDLS: ' + process.env.CLIENT_ID);
   var query = {
     client_id : process.env.CLIENT_ID,
     response_type : 'code',
-    redirect_uri : 'https://still-inlet-8239.herokuapp.com/callback',
+    redirect_uri : pathname,
     scope : 'playlist-modify-public'
   }
   res.redirect('https://accounts.spotify.com/authorize?' + querystring.stringify(query));
@@ -37,9 +43,12 @@ router.get('/callback', function(req, res, next) {
   if(error){
     res.render('index', { title : error });
   }
+  
+   var hostname = req.headers.host; // hostname = 'localhost:8080'
+  var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
 
   var code = req.query.code;
-  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'https://still-inlet-8239.herokuapp.com/callback'};
+  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
   spotify.requestToken(authenticationInformation, function(data){
     console.log(data.access_token);
     res.cookie('access_token', data.access_token);
