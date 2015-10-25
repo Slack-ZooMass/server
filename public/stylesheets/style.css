@@ -1,8 +1,112 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+html, body {
+    margin: 0;
+    height: 100%;
+	font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: none;
 }
 
 a {
   color: #00B7FF;
 }
+/*
+Login page
+*/
+.hero_img{
+	height: 100%;
+    background-size: cover;
+}
+
+.hero1{
+	background-image: url("/img/hero1.jpg");
+}
+.hero2{
+	background-image: url("/img/hero2.jpg");
+}
+.hero3{
+	background-image: url("/img/hero3.jpg");
+}
+
+	
+
+.login{
+	border-radius: 10px;
+	/*border: solid 5px black;*/
+	/*background-color: rgba(0,0,0,0.5);*/
+	width: 350px;
+	height: 150px;
+    text-align: center;
+    position: absolute;
+    top:-150px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+
+}
+.welcome{
+	color: white;
+	font-size: 6em;
+	margin: 0;
+}
+.motto{
+	font-style: italic;
+	color: white;
+	font-size: 2em;
+}
+
+.login_button{
+	width: 250px;
+	cursor: pointer;
+}
+
+
+/*
+query login
+*/
+.query_input{
+	color: #666;
+	font-size: 16px;
+	display: block;
+    width: 60%;
+    margin: 10px auto;
+    height: 18px;
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+}
+
+
+.query_submit{
+	-webkit-transition: width 2s;
+    transition: all 0.5s;
+	color: white;
+	cursor: pointer;
+	background-color: rgba(0,0,0,0);
+    border: 2px solid white;
+    border-radius: 5px;
+    width: 40%;
+    font-weight: 600;
+    font-size: 14px;
+    height: 35px;
+    text-transform: uppercase;
+    outline: none;
+    box-shadow: none;
+}
+
+.query_submit:hover{
+	-webkit-transition: width 2s;
+    transition: all 0.5s;
+	background-color: rgba(0,0,0,0.8);
+}
+
+
+
+
+
+
