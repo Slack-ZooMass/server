@@ -7,7 +7,7 @@ var url = require('url');
 
 // README
 router.get('/', function(req, res, next) {
-  var access_token = req.cookies.access_token;
+  var access_token = req.cookies.access_token
   spotify.getMe(access_token, function(data){
     var user_id = data.id;
 
@@ -52,7 +52,7 @@ router.get('/callback', function(req, res, next) {
   spotify.requestToken(authenticationInformation, function(data){
     console.log(data.access_token);
     res.cookie('access_token', data.access_token);
-    res.render('query')
+    res.render('query');
   });
 });
 

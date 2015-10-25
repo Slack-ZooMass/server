@@ -18,6 +18,17 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 
+// if bluemix credentials exists, then override local
+var credentials = extend({
+  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
+  password: 'tFYIUlzIFylf',
+  version: 'v1'
+}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
+
+// wrapper
+var visual_insights = watson.visual_insights(credentials);
+
+
 /* GET a playlist by keyword*/
 router.post('/with-words', function(req, res, next) {
     var words = req.body.words;
@@ -29,44 +40,26 @@ router.post('/with-words', function(req, res, next) {
     });
 });
 
-// if bluemix credentials exists, then override local
-var credentials = extend({
-  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
-  password: 'tFYIUlzIFylf',
-  version: 'v1'
-}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
-
-// wrapper
-var visual_insights = watson.visual_insights(credentials);
-
-/* GET a playlist by keyword*/
-router.post('/with-images', upload.single('images_file'), function(req, res, next) {
+router.post('/with-images',  upload.single('images_file'), function(req, res, next) {
 
     var access_token = req.body.access_token;
-    var user_id = req.body.user_id;
-    var images_file = fs.createReadStream('./' + req.file.path);
+    var user_id = req.body.user_id
+
+    var images_file = fs.createReadStream(req.file.path);
     if (!images_file)
-        return res.status(404).json({error:'The photo album zip file is not found.  Please try again.', code:404});
+        return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
 
-    visual_insights.summary({images_file: images_file}, function (err, result) {
+    visual_insights.summary({images_file: images_file}, function (err, response) {
         if (err){
-            res.send(err);
-        }
-        else{
-            var words = [];
-            var descriptors = result.summary.sort(function(a, b){
-                return b.score - a.score;
-            });
-            descriptors.slice(0, 10).forEach(function(descriptor){
-                descriptor = descriptor.name.split('/');
-                words.push(descriptor[descriptor.length-1]);
-            });
-
-            generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+            next(err);
+        } else {
+            var descriptors = result.summary;
+            generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
                 res.send(response);
             });
         }
     });
 });
+
 
 module.exports = router;
