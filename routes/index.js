@@ -24,7 +24,7 @@ router.get('/', function(req, res, next) {
 router.get('/login', function(req, res, next) {
 
   var hostname = req.headers.host; // hostname = 'localhost:8080'
-  var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
+  var pathname = 'localhost:3000/callback'; // pathname = '/MyApp'
   console.log(pathname);
 
   console.log('LOGIN JFKDLSJ:FKLS:DJFKLS:JFKLS:DJFKL:SJFKDL:SFJKSL:FJKSLD:FJKSLD:FJKSL:FJKDLS: ' + process.env.CLIENT_ID);
@@ -45,7 +45,7 @@ router.get('/callback', function(req, res, next) {
   }
 
    var hostname = req.headers.host; // hostname = 'localhost:8080'
-  var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
+  var pathname = 'localhost:3000/callback'; // pathname = '/MyApp'
 
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
