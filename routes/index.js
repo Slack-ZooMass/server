@@ -7,13 +7,16 @@ var generator = require('../lib/generator');
 // README
 router.get('/', function(req, res, next) {
   var access_token = req.cookies.access_token;
-  console.log(access_token);
-  if(access_token){
-    res.render('query');
-  }
-  else{
-    res.render('index', { title: data });
-  }
+  spotify.getMe(access_token, function(data){
+    var user_id = data.id;
+
+    if(user_id === undefined){ // token has expired
+      res.render('index', { title: data });
+    }
+    else{
+      res.render('query');
+    }
+  });
 });
 
 // authenticate with spotify
@@ -36,8 +39,8 @@ router.get('/callback', function(req, res, next) {
 
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'http://localhost:3000/callback'};
-  spotify.requestToken(authenticationInformation, function(access_token){
-    res.cookie('access_token', access_token);
+  spotify.requestToken(authenticationInformation, function(data){
+    res.cookie('access_token', data.access_token);
     res.render('query')
   });
 });
@@ -45,15 +48,17 @@ router.get('/callback', function(req, res, next) {
 router.get('/generateAndRedirect', function(req, res, next) {
   var access_token = req.cookies.access_token;
   spotify.getMe(access_token, function(data){
-    var words = req.query.words.split(' ');
     var user_id = data.id;
 
-    console.log(user_id);
-    console.log(words);
-
-    generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
-        res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
-    });
+    if(user_id === undefined){ // token has expired
+        res.redirect('/');
+    }
+    else{
+      var words = req.query.words.split(' ');
+      generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+          res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
+      });
+    }
   });
 });
 

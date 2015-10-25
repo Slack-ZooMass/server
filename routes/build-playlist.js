@@ -20,9 +20,8 @@ router.post('/with-words', function(req, res, next) {
 
 // if bluemix credentials exists, then override local
 var credentials = extend({
-  url: '<url>',
-  username: '<username>',
-  password: '<password>',
+  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
+  password: 'tFYIUlzIFylf',
   version: 'v1'
 }, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
 
@@ -62,7 +61,7 @@ router.post('/with-images', function(req, res, next) {
             return next(err);
         }
         else{
-            console.log();
+            res.json(result);
             // generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
             //     res.send(response);
             // });
