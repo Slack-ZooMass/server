@@ -38,8 +38,9 @@ router.get('/callback', function(req, res, next) {
   }
 
   var code = req.query.code;
-  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'http://localhost:3000/callback'};
+  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: 'https://still-inlet-8239.herokuapp.com/callback'};
   spotify.requestToken(authenticationInformation, function(data){
+    console.log(data.access_token);
     res.cookie('access_token', data.access_token);
     res.render('query')
   });
