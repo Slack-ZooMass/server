@@ -6,6 +6,17 @@ var extend = require('util')._extend;
 var bluemix = require('../lib/bluemix.js');
 var watson = require('watson-developer-cloud');
 var fs = require('fs');
+var multer = require('multer');
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, 'uploads/')
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + '.zip') //Appending .zip
+  }
+})
+var upload = multer({ storage: storage });
+
 
 /* GET a playlist by keyword*/
 router.post('/with-words', function(req, res, next) {
@@ -29,23 +40,31 @@ var credentials = extend({
 var visual_insights = watson.visual_insights(credentials);
 
 /* GET a playlist by keyword*/
-router.post('/with-images', function(req, res, next) {
-    var words = req.body.words;
+router.post('/with-images', upload.single('images_file'), function(req, res, next) {
+
     var access_token = req.body.access_token;
     var user_id = req.body.user_id;
-    var images_file = fs.createReadStream('./dank_memes.zip');
+    var images_file = fs.createReadStream('./' + req.file.path);
     if (!images_file)
         return res.status(404).json({error:'The photo album zip file is not found.  Please try again.', code:404});
 
     visual_insights.summary({images_file: images_file}, function (err, result) {
         if (err){
-            return next(err);
+            res.send(err);
         }
         else{
-            res.json(result);
-            // generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
-            //     res.send(response);
-            // });
+            var words = [];
+            var descriptors = result.summary.sort(function(a, b){
+                return b.score - a.score;
+            });
+            descriptors.slice(0, 10).forEach(function(descriptor){
+                descriptor = descriptor.name.split('/');
+                words.push(descriptor[descriptor.length-1]);
+            });
+
+            generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+                res.send(response);
+            });
         }
     });
 });
