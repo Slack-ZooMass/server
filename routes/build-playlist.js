@@ -28,25 +28,6 @@ var credentials = extend({
 // wrapper
 var visual_insights = watson.visual_insights(credentials);
 
-// get profile summary image analysis
-router.post('/summary', function(req, res, next) {
-    var images_file = fs.createReadStream('./dank_memes.zip');
-    if (!images_file)
-        return res.status(404).json({error:'The photo album zip file is not found.  Please try again.', code:404});
-
-    visual_insights.summary({images_file: images_file}, function (err, result) {
-        if (err)
-            return next(err);
-        else
-            res.json(result);
-    });
-});
-
-// get classifiers list
-router.get('/classifiers', function(req, res) {
-    visual_insights.classifiers(req.query).pipe(res);
-});
-
 /* GET a playlist by keyword*/
 router.post('/with-images', function(req, res, next) {
     var words = req.body.words;
