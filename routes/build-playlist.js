@@ -49,7 +49,7 @@ router.post('/with-images',  upload.single('images_file'), function(req, res, ne
     if (!images_file)
         return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
 
-    visual_insights.summary({images_file: images_file}, function (err, response) {
+    visual_insights.summary({images_file: images_file}, function (err, result) {
         if (err){
             next(err);
         } else {
