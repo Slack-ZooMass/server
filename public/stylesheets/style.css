@@ -80,6 +80,22 @@ query login
     border: none;
     padding: 10px;
 }
+.zip_input{
+    position: absolute;
+    left: 0;
+    opacity:0;
+}
+.input_container{
+    position: relative;
+    color: white;
+    font-size: 16px;
+    width: 60%;
+    margin: 0px auto 10px;
+    padding: 10px;
+    border: 2px solid white;
+    border-radius: 5px;
+    background-color: rgba(0,0,0,0.6);
+}
 
 
 .query_submit{
@@ -104,9 +120,3 @@ query login
     transition: all 0.5s;
 	background-color: rgba(0,0,0,0.8);
 }
-
-
-
-
-
-
