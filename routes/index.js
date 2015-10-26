@@ -61,6 +61,7 @@ router.get('/callback', function(req, res, next) {
 
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
+  console.log(authenticationInformation);
   spotify.requestToken(authenticationInformation, function(data){
     console.log(data.access_token);
     res.cookie('access_token', data.access_token);
