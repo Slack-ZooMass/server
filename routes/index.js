@@ -19,7 +19,17 @@ var storage = multer.diskStorage({
 })
 var upload = multer({ storage: storage });
 
-// README
+// if bluemix credentials exists, then override local
+var credentials = extend({
+  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
+  password: 'tFYIUlzIFylf',
+  version: 'v1'
+}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
+
+// wrapper for watson visual insights
+var visual_insights = watson.visual_insights(credentials);
+
+// Either login or query
 router.get('/', function(req, res, next) {
   var access_token = req.cookies.access_token
   spotify.getMe(access_token, function(data){
@@ -61,15 +71,14 @@ router.get('/callback', function(req, res, next) {
 
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
-  console.log(authenticationInformation);
   spotify.requestToken(authenticationInformation, function(data){
-    console.log(data);
     res.cookie('access_token', data.access_token);
     res.render('query');
   });
 });
 
-router.get('/generateAndRedirect', function(req, res, next) {
+// create and go to a spotify playlist
+router.post('/generateAndRedirect', upload.single('images_file'), function(req, res, next) {
   var access_token = req.cookies.access_token;
   spotify.getMe(access_token, function(data){
     var user_id = data.id;
@@ -78,61 +87,31 @@ router.get('/generateAndRedirect', function(req, res, next) {
         res.redirect('/');
     }
     else{
-      var words = req.query.words.split(' ');
-      generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
-          res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
-      });
-    }
-  });
-});
+      var words = req.body.words;
+      var file = req.file;
 
-router.get('/zip', function(req, res, next) {
-  var access_token = req.cookies.access_token
-  spotify.getMe(access_token, function(data){
-    var user_id = data.id;
-
-    if(user_id === undefined){ // token has expired
-      res.render('index', { title: data });
-    }
-    else{
-      res.render('zip-upload-testing.hbs');
-    }
-  });
-});
-
-// if bluemix credentials exists, then override local
-var credentials = extend({
-  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
-  password: 'tFYIUlzIFylf',
-  version: 'v1'
-}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
-
-// wrapper
-var visual_insights = watson.visual_insights(credentials);
-
-router.post('/generateAndRedirectFromZip', upload.single('images_file'), function(req, res, next) {
-  var access_token = req.cookies.access_token;
-  spotify.getMe(access_token, function(data){
-    var user_id = data.id;
-
-    if(user_id === undefined){ // token has expired
-        res.redirect('/');
-    }
-    else{
-      var images_file = fs.createReadStream(req.file.path);
-      if (!images_file)
-          return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
-
-      visual_insights.summary({images_file: images_file}, function (err, result) {
-        if (err){
-            next(err);
-        } else {
-            var descriptors = result.summary;
-            generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
-              res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
-            });
+      if(words){
+        var words = words.split(' ');
+        generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+            res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
+        });
+      }
+      if(file){
+        var images_file = fs.createReadStream(file.path);
+        if(images_file){
+          visual_insights.summary({images_file: images_file}, function (err, result) {
+            if(err){
+              next(err);
+            }
+            else{
+              var descriptors = result.summary;
+              generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
+                res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
+              });
+            }
+          });
         }
-      });
+      }
     }
   });
 });

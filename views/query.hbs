@@ -1,9 +1,12 @@
 <div class="hero_img">
 	<div class="login">
 		<p class="welcome">songgen</p>
-		<p class="motto">convert words to music: </p>
-		<form action='/generateAndRedirect'>
-			<input required class="query_input" maxlength="76" type="text" placeholder="keywords..." name="words">
+		<p class="motto">upload words or photos:</p>
+		<form action='/generateAndRedirect' method="post" enctype="multipart/form-data">
+			<input class="query_input" maxlength="76" type="text" placeholder="keywords..." name="words">
+			<div class="input_container"> choose .zip file
+				 <input class="zip_input custom-file-input" type="file" name="images_file" accept=".zip"/>
+			</div>
 			<input class="query_submit" type='submit' value='explore'/>
 		</form>
 	</div>
