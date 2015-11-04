@@ -1,12 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var querystring = require('querystring');
-var spotify = require('../lib/spotify.js');
-var generator = require('../lib/generator');
-var url = require('url');
-var extend = require('util')._extend;
-var bluemix = require('../lib/bluemix.js');
-var watson = require('watson-developer-cloud');
+var spotify = require('../lib/spotify');
+var api = require('../lib/api');
 var fs = require('fs');
 var multer = require('multer');
 var storage = multer.diskStorage({
@@ -19,26 +15,16 @@ var storage = multer.diskStorage({
 })
 var upload = multer({ storage: storage });
 
-// if bluemix credentials exists, then override local
-var credentials = extend({
-  username: '0e8ac13c-e154-4cf8-be34-4f88ca9cac47',
-  password: 'tFYIUlzIFylf',
-  version: 'v1'
-}, bluemix.getServiceCreds('visual_insights')); // VCAP_SERVICES
-
-// wrapper for watson visual insights
-var visual_insights = watson.visual_insights(credentials);
-
 // Either login or query
 router.get('/', function(req, res, next) {
   var access_token = req.cookies.access_token
-  spotify.getMe(access_token, function(data){
+  spotify.getMe(access_token, function(data) {
     var user_id = data.id;
 
-    if(user_id === undefined){ // token has expired
+    if(user_id === undefined) { // token has expired
       res.render('index', { title: data });
     }
-    else{
+    else {
       res.render('query');
     }
   });
@@ -62,7 +48,7 @@ router.get('/login', function(req, res, next) {
 // get authentication token and save to cookie
 router.get('/callback', function(req, res, next) {
   var error = req.query.error
-  if(error){
+  if(error) {
     res.render('index', { title : error });
   }
 
@@ -71,7 +57,7 @@ router.get('/callback', function(req, res, next) {
 
   var code = req.query.code;
   var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
-  spotify.requestToken(authenticationInformation, function(data){
+  spotify.requestToken(authenticationInformation, function(data) {
     res.cookie('access_token', data.access_token);
     res.render('query');
   });
@@ -80,35 +66,27 @@ router.get('/callback', function(req, res, next) {
 // create and go to a spotify playlist
 router.post('/generateAndRedirect', upload.single('images_file'), function(req, res, next) {
   var access_token = req.cookies.access_token;
-  spotify.getMe(access_token, function(data){
+  spotify.getMe(access_token, function(data) {
     var user_id = data.id;
 
-    if(user_id === undefined){ // token has expired
-        res.redirect('/');
+    if(user_id === undefined) { // token has expired
+      res.redirect('/');
     }
-    else{
+    else {
       var words = req.body.words;
       var file = req.file;
 
-      if(words){
+      if(words) {
         var words = words.split(' ');
-        generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
-            res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
+        api.createPlaylistFromWords(words, access_token, user_id, function(playlistID) {
+            res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
         });
       }
-      if(file){
+      else if(file) {
         var images_file = fs.createReadStream(file.path);
-        if(images_file){
-          visual_insights.summary({images_file: images_file}, function (err, result) {
-            if(err){
-              next(err);
-            }
-            else{
-              var descriptors = result.summary;
-              generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
-                res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + response);
-              });
-            }
+        if(images_file) {
+          api.createPlaylistFromImages(images_file, access_token, user_id, function(playlistID) {
+            res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
           });
         }
       }

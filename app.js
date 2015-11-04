@@ -4,10 +4,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var bluemix = require('./lib/bluemix.js');
-var extend = require('util')._extend;
-var watson = require('watson-developer-cloud');
-var fs = require('fs');
 
 var routes = require('./routes/index');
 var build_playlist = require('./routes/build-playlist');
@@ -21,9 +17,8 @@ app.set('view engine', 'hbs');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json({limit: '500mb'}));//, strict: false}));
+app.use(bodyParser.json({limit: '500mb'}));
 app.use(bodyParser.urlencoded({ limit: '500mb', extended: false }));
-// app.use(bodyParser.raw({ limit: '500mb', inflate: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
