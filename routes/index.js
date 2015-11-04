@@ -80,14 +80,14 @@ router.post('/generateAndRedirect', upload.single('images_file'), function(req, 
 
       if(words){
         var words = words.split(' ');
-        api.getPlaylistFromWords(words, access_token, user_id, function(playlistID) {
+        api.createPlaylistFromWords(words, access_token, user_id, function(playlistID) {
             res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
         });
       }
       if(file){
         var images_file = fs.createReadStream(file.path);
         if(images_file){
-          api.getPlaylistFromImages(images_file, access_token, user_id, function(playlistID) {
+          api.createPlaylistFromImages(images_file, access_token, user_id, function(playlistID) {
               res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
           });
         }
