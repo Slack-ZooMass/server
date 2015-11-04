@@ -52,7 +52,8 @@ router.post('/with-images',  upload.single('images_file'), function(req, res, ne
   visual_insights.summary({images_file: images_file}, function (err, result) {
     if(err) {
       next(err);
-    } else {
+    }
+    else {
       var descriptors = result.summary;
       generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
         res.send(response);
