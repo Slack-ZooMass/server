@@ -31,34 +31,34 @@ var visual_insights = watson.visual_insights(credentials);
 
 /* GET a playlist by keyword*/
 router.post('/with-words', function(req, res, next) {
-    var words = req.body.words;
-    var access_token = req.body.access_token;
-    var user_id = req.body.user_id;
+  var words = req.body.words;
+  var access_token = req.body.access_token;
+  var user_id = req.body.user_id;
 
-    generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
-        res.send(response);
-    });
+  generator.getPlaylistFromWords(words, access_token, user_id, function(response) {
+    res.send(response);
+  });
 });
 
 router.post('/with-images',  upload.single('images_file'), function(req, res, next) {
+  var access_token = req.body.access_token;
+  var user_id = req.body.user_id
 
-    var access_token = req.body.access_token;
-    var user_id = req.body.user_id
+  var images_file = fs.createReadStream(req.file.path);
+  if(!images_file) {
+    return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
+  }
 
-    var images_file = fs.createReadStream(req.file.path);
-    if (!images_file)
-        return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
-
-    visual_insights.summary({images_file: images_file}, function (err, result) {
-        if (err){
-            next(err);
-        } else {
-            var descriptors = result.summary;
-            generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
-                res.send(response);
-            });
-        }
-    });
+  visual_insights.summary({images_file: images_file}, function (err, result) {
+    if(err) {
+      next(err);
+    } else {
+      var descriptors = result.summary;
+      generator.getPlaylistFromDescriptors(descriptors, access_token, user_id, function(response) {
+        res.send(response);
+      });
+    }
+  });
 });
 
 
