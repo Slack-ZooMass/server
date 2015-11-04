@@ -3,8 +3,6 @@ var router = express.Router();
 var querystring = require('querystring');
 var spotify = require('../lib/spotify');
 var api = require('../lib/api');
-var url = require('url');
-
 var fs = require('fs');
 var multer = require('multer');
 var storage = multer.diskStorage({
