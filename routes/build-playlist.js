@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var api = require('../lib/api');
 var fs = require('fs');
 var multer = require('multer');
 var storage = multer.diskStorage({
