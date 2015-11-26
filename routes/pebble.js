@@ -45,7 +45,7 @@ router.get('/callback', function(req, res, next) {
     }
 
     // set the return URL depending on the runtime environment
-    var return_to = getQueryParam('return_to', 'pebblejs://close#');
+    var return_to = req.query.return_to || 'pebblejs://close#';
     res.redirect(return_to + encodeURIComponent(JSON.stringify(config_settings)));
   });
 });
