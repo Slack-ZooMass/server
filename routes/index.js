@@ -20,7 +20,7 @@ router.get('/', function(req, res, next) {
   var access_token = req.cookies.access_token;
   var refresh_token = req.cookies.refresh_token;
   if(access_token === undefined || refresh_token === undefined) {
-    res.render('index', { title: data });
+    res.render('index');
   }
   else {
     res.render('query');
