@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var build_playlist = require('./routes/build-playlist');
+var pebble = require('./routes/pebble.js');
 
 var app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/build-playlist', build_playlist);
+app.use('/pebble', pebble);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
