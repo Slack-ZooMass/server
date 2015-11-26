@@ -6,7 +6,7 @@ var api = require('../lib/api');
 
 // either login or query
 router.get('/', function(req, res, next) {
-  res.render('pebble-index', { title: data });
+  res.render('pebble-index');
 });
 
 // authenticate with spotify
