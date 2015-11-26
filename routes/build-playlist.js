@@ -16,28 +16,31 @@ var upload = multer({ storage: storage });
 /* GET a playlist by keyword*/
 router.post('/with-words', function(req, res, next) {
   var words = req.body.words;
-  var access_token = req.body.access_token;
-  var user_id = req.body.user_id;
+  var credentials = {
+    access_token : req.body.access_token,
+    refresh_token : req.body.refresh_token
+  }
 
-  api.createPlaylistFromWords(words, access_token, user_id, function(playlistID) {
-    res.send(playlistID);
+  api.createPlaylistFromWords(words, credentials, function(response) {
+    res.send(response);
   });
 });
 
 router.post('/with-images',  upload.single('images_file'), function(req, res, next) {
-  var access_token = req.body.access_token;
-  var user_id = req.body.user_id
-
   var images_file = fs.createReadStream(req.file.path);
+  var credentials = {
+    access_token : req.body.access_token,
+    refresh_token : req.body.refresh_token
+  }
+
   if(!images_file) {
     return next({ error:'The photo album zip file is not found.  Please try again.', code:404});
   }
   else {
-    api.createPlaylistFromImages(images_file, access_token, user_id, function(playlistID) {
-      res.send(playlistID);
+    api.createPlaylistFromImages(images_file, credentials, function(response) {
+      res.send(response);
     });
   }
 });
-
 
 module.exports = router;
