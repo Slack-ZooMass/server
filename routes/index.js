@@ -87,16 +87,14 @@ router.post('/generateAndRedirect', upload.single('images_file'), function(req, 
 
 function handleGenerateResponse(req, res, response) {
   var access_token = response.access_token;
+  var user_id = response.user_id;
   var playlistID = response.playlistID;
 
   if(access_token) { // set the new access token
     res.cookie('access_token', access_token);
   }
 
-  spotify.getMe(response.access_token || req.cookies.access_token, function(data) {
-    var user_id = data.id;
-    res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
-  })
+  res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
 }
 
 module.exports = router;
