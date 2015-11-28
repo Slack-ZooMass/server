@@ -26,6 +26,7 @@ router.post('/with-words', function(req, res, next) {
     console.log(credentials);
 
   api.createPlaylistFromWords(words, credentials, function(response) {
+    console.log('Playlist/Credentials created:', response);
     res.send(response);
   });
 });
