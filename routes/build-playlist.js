@@ -21,6 +21,10 @@ router.post('/with-words', function(req, res, next) {
     refresh_token : req.body.refresh_token
   }
 
+    console.log(req);
+    console.log(words);
+    console.log(credentials);
+
   api.createPlaylistFromWords(words, credentials, function(response) {
     res.send(response);
   });
