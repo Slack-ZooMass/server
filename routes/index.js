@@ -86,14 +86,15 @@ router.post('/generateAndRedirect', upload.single('images_file'), function(req, 
 });
 
 function handleGenerateResponse(req, res, response) {
-  if(response.access_token) {
-    res.cookie('access_token', response.access_token);
-    res.cookie('refresh_token', response.access_token);
+  var access_token = response.access_token;
+  var playlistID = response.playlistID;
+
+  if(access_token) { // set the new access token
+    res.cookie('access_token', access_token);
   }
 
   spotify.getMe(response.access_token || req.cookies.access_token, function(data) {
     var user_id = data.id;
-    var playlistID = response.playlistID;
     res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
   })
 }
