@@ -36,8 +36,8 @@ router.get('/callback', function(req, res, next) {
   var pathname = 'http://'+hostname+'/pebble/callback'; // pathname = '/MyApp'
 
   var code = req.query.code;
-  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
-  spotify.requestToken(authenticationInformation, function(data) {
+  var authentication_information = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
+  spotify.requestToken(authentication_information, function(data) {
 
     var config_settings = {
       access_token : data.access_token,

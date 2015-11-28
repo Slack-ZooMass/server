@@ -53,8 +53,8 @@ router.get('/callback', function(req, res, next) {
   var pathname = 'http://'+hostname+'/callback'; // pathname = '/MyApp'
 
   var code = req.query.code;
-  var authenticationInformation = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
-  spotify.requestToken(authenticationInformation, function(data) {
+  var authentication_information = {grant_type: 'authorization_code', code: code, redirect_uri: pathname};
+  spotify.requestToken(authentication_information, function(data) {
     res.cookie('access_token', data.access_token);
     res.cookie('refresh_token', data.access_token);
     res.render('query');
@@ -88,13 +88,13 @@ router.post('/generateAndRedirect', upload.single('images_file'), function(req, 
 function handleGenerateResponse(req, res, response) {
   var access_token = response.access_token;
   var user_id = response.user_id;
-  var playlistID = response.playlistID;
+  var playlist_id = response.playlist_id;
 
   if(access_token) { // set the new access token
     res.cookie('access_token', access_token);
   }
 
-  res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlistID);
+  res.redirect('http://open.spotify.com/user/' + user_id + '/playlist/' + playlist_id);
 }
 
 module.exports = router;
